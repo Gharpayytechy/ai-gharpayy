@@ -1,5 +1,6 @@
 import type { PipelineStage } from "@/lib/pipeline/stage-config";
 import type { WorkBucket } from "./work-concurrency";
+export { CANONICAL_CONVERSATION_FAMILIES, CONVERSATION_FAMILY_LABELS } from "./conversation-library";
 
 export const CONVERSATION_COMPILER_VERSION = "gharpayy-csc-v1.0.0";
 

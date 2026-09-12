@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789211913548,
+      "tag": "0000_extend_conversation_library_for_ocr_corpus",
+      "breakpoints": true
+    }
+  ]
+}

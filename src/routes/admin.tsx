@@ -20,6 +20,7 @@ const TABS = [
   { to: "/admin/console", label: "Console" },
   { to: "/admin/flow", label: "Role Flow" },
   { to: "/admin/playbooks", label: "Playbooks" },
+  { to: "/admin/conversation-library", label: "Conversation Library" },
   { to: "/admin/report-center", label: "Report Centre" },
 ];
 

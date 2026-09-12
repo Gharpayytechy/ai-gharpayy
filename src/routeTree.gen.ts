@@ -121,6 +121,7 @@ import { Route as AdminPulseRouteImport } from './routes/admin.pulse'
 import { Route as AdminPlaybooksRouteImport } from './routes/admin.playbooks'
 import { Route as AdminOpsRouteImport } from './routes/admin.ops'
 import { Route as AdminFlowRouteImport } from './routes/admin.flow'
+import { Route as AdminConversationLibraryRouteImport } from './routes/admin.conversation-library'
 import { Route as AdminConsoleRouteImport } from './routes/admin.console'
 import { Route as AdminCommandCenterRouteImport } from './routes/admin.command-center'
 import { Route as AdminBriefingRouteImport } from './routes/admin.briefing'
@@ -694,6 +695,12 @@ const AdminFlowRoute = AdminFlowRouteImport.update({
   path: '/flow',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminConversationLibraryRoute =
+  AdminConversationLibraryRouteImport.update({
+    id: '/conversation-library',
+    path: '/conversation-library',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminConsoleRoute = AdminConsoleRouteImport.update({
   id: '/console',
   path: '/console',
@@ -800,6 +807,7 @@ export interface FileRoutesByFullPath {
   '/admin/briefing': typeof AdminBriefingRoute
   '/admin/command-center': typeof AdminCommandCenterRoute
   '/admin/console': typeof AdminConsoleRoute
+  '/admin/conversation-library': typeof AdminConversationLibraryRoute
   '/admin/flow': typeof AdminFlowRoute
   '/admin/ops': typeof AdminOpsRoute
   '/admin/playbooks': typeof AdminPlaybooksRoute
@@ -924,6 +932,7 @@ export interface FileRoutesByTo {
   '/admin/briefing': typeof AdminBriefingRoute
   '/admin/command-center': typeof AdminCommandCenterRoute
   '/admin/console': typeof AdminConsoleRoute
+  '/admin/conversation-library': typeof AdminConversationLibraryRoute
   '/admin/flow': typeof AdminFlowRoute
   '/admin/ops': typeof AdminOpsRoute
   '/admin/playbooks': typeof AdminPlaybooksRoute
@@ -1051,6 +1060,7 @@ export interface FileRoutesById {
   '/admin/briefing': typeof AdminBriefingRoute
   '/admin/command-center': typeof AdminCommandCenterRoute
   '/admin/console': typeof AdminConsoleRoute
+  '/admin/conversation-library': typeof AdminConversationLibraryRoute
   '/admin/flow': typeof AdminFlowRoute
   '/admin/ops': typeof AdminOpsRoute
   '/admin/playbooks': typeof AdminPlaybooksRoute
@@ -1179,6 +1189,7 @@ export interface FileRouteTypes {
     | '/admin/briefing'
     | '/admin/command-center'
     | '/admin/console'
+    | '/admin/conversation-library'
     | '/admin/flow'
     | '/admin/ops'
     | '/admin/playbooks'
@@ -1303,6 +1314,7 @@ export interface FileRouteTypes {
     | '/admin/briefing'
     | '/admin/command-center'
     | '/admin/console'
+    | '/admin/conversation-library'
     | '/admin/flow'
     | '/admin/ops'
     | '/admin/playbooks'
@@ -1429,6 +1441,7 @@ export interface FileRouteTypes {
     | '/admin/briefing'
     | '/admin/command-center'
     | '/admin/console'
+    | '/admin/conversation-library'
     | '/admin/flow'
     | '/admin/ops'
     | '/admin/playbooks'
@@ -2385,6 +2398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFlowRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/conversation-library': {
+      id: '/admin/conversation-library'
+      path: '/conversation-library'
+      fullPath: '/admin/conversation-library'
+      preLoaderRoute: typeof AdminConversationLibraryRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/console': {
       id: '/admin/console'
       path: '/console'
@@ -2476,6 +2496,7 @@ interface AdminRouteChildren {
   AdminBriefingRoute: typeof AdminBriefingRoute
   AdminCommandCenterRoute: typeof AdminCommandCenterRoute
   AdminConsoleRoute: typeof AdminConsoleRoute
+  AdminConversationLibraryRoute: typeof AdminConversationLibraryRoute
   AdminFlowRoute: typeof AdminFlowRoute
   AdminOpsRoute: typeof AdminOpsRoute
   AdminPlaybooksRoute: typeof AdminPlaybooksRoute
@@ -2493,6 +2514,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBriefingRoute: AdminBriefingRoute,
   AdminCommandCenterRoute: AdminCommandCenterRoute,
   AdminConsoleRoute: AdminConsoleRoute,
+  AdminConversationLibraryRoute: AdminConversationLibraryRoute,
   AdminFlowRoute: AdminFlowRoute,
   AdminOpsRoute: AdminOpsRoute,
   AdminPlaybooksRoute: AdminPlaybooksRoute,

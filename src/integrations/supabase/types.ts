@@ -295,6 +295,10 @@ export type Database = {
       }
       conversation_pattern_clusters: {
         Row: {
+          assigned_family: string | null
+          avg_ocr_confidence: number | null
+          confidence_band: string | null
+          corpus_row_count: number
           first_seen_at: string
           id: string
           last_seen_at: string
@@ -305,10 +309,18 @@ export type Database = {
           representative_text: string
           reviewed_at: string | null
           reviewed_by: string | null
+          sample_labels: string[]
+          source_corpus: string
+          source_screenshots: string[]
+          source_zones: string[]
           status: string
           suggested_family: string | null
         }
         Insert: {
+          assigned_family?: string | null
+          avg_ocr_confidence?: number | null
+          confidence_band?: string | null
+          corpus_row_count?: number
           first_seen_at?: string
           id?: string
           last_seen_at?: string
@@ -319,10 +331,18 @@ export type Database = {
           representative_text: string
           reviewed_at?: string | null
           reviewed_by?: string | null
+          sample_labels?: string[]
+          source_corpus?: string
+          source_screenshots?: string[]
+          source_zones?: string[]
           status?: string
           suggested_family?: string | null
         }
         Update: {
+          assigned_family?: string | null
+          avg_ocr_confidence?: number | null
+          confidence_band?: string | null
+          corpus_row_count?: number
           first_seen_at?: string
           id?: string
           last_seen_at?: string
@@ -333,6 +353,10 @@ export type Database = {
           representative_text?: string
           reviewed_at?: string | null
           reviewed_by?: string | null
+          sample_labels?: string[]
+          source_corpus?: string
+          source_screenshots?: string[]
+          source_zones?: string[]
           status?: string
           suggested_family?: string | null
         }
@@ -3157,6 +3181,42 @@ export type Database = {
     }
     Functions: {
       any_role: { Args: { _user_id: string }; Returns: boolean }
+      assign_conversation_pattern_family: {
+        Args: {
+          _family: string
+          _notes?: string
+          _pattern_id: string
+          _rule_id?: string
+        }
+        Returns: {
+          assigned_family: string | null
+          avg_ocr_confidence: number | null
+          confidence_band: string | null
+          corpus_row_count: number
+          first_seen_at: string
+          id: string
+          last_seen_at: string
+          mapped_rule_id: string | null
+          normalized_pattern: string
+          notes: string | null
+          occurrence_count: number
+          representative_text: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          sample_labels: string[]
+          source_corpus: string
+          source_screenshots: string[]
+          source_zones: string[]
+          status: string
+          suggested_family: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "conversation_pattern_clusters"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       claim_flow_lead: {
         Args: {
           _batch_id?: string

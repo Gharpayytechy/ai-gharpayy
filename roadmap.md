@@ -6,6 +6,9 @@
 - [ ] Add and run compiler fixtures and integration tests
 - [ ] Verify Flow OS, Vision, work queue, and Control Tower in the browser
 - [ ] Confirm all content routes include required social metadata
+- [x] Seed the 107-screenshot / 931-row OCR corpus into the conversation library
+- [x] Build the admin Conversation Library with family browsing, variants, and manual mapping
+- [ ] Verify seed counts, permissions, mapping persistence, and responsive UI
 - [ ] Seed the 107-screenshot / 931-row OCR corpus into the conversation library
 - [ ] Build the admin Conversation Library with family browsing, variants, and manual mapping
 - [ ] Verify seed counts, permissions, mapping persistence, and responsive UI
