@@ -14,6 +14,7 @@ import {
   isCanonicalConversationFamily,
   type CanonicalConversationFamily,
 } from "@/lib/flow-os/conversation-library";
+import { OCR_CONVERSATION_CORPUS } from "@/lib/flow-os/ocr-conversation-corpus";
 import { useTowerAuth } from "@/lib/tower/auth";
 
 type RuleRow = {
@@ -45,6 +46,17 @@ type PatternRow = {
 
 type FamilyFilter = CanonicalConversationFamily | "ALL" | "UNMAPPED";
 
+const CORPUS_PATTERNS: PatternRow[] = OCR_CONVERSATION_CORPUS.map((row) => ({
+  ...row,
+  id: row.seedId,
+  assigned_family: null,
+  status: "new",
+  mapped_rule_id: null,
+  sample_labels: [...row.sample_labels],
+  source_screenshots: [...row.source_screenshots],
+  source_zones: [...row.source_zones],
+}));
+
 function stringList(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 }
@@ -52,7 +64,7 @@ function stringList(value: unknown): string[] {
 export function ConversationLibrary() {
   const auth = useTowerAuth();
   const [rules, setRules] = useState<RuleRow[]>([]);
-  const [patterns, setPatterns] = useState<PatternRow[]>([]);
+  const [patterns, setPatterns] = useState<PatternRow[]>(CORPUS_PATTERNS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -79,7 +91,10 @@ export function ConversationLibrary() {
     if (message) setError(message);
     else {
       setRules((ruleResult.data ?? []) as RuleRow[]);
-      setPatterns((patternResult.data ?? []) as PatternRow[]);
+      const stored = (patternResult.data ?? []) as PatternRow[];
+      const byPattern = new Map(stored.map((row) => [row.normalized_pattern, row]));
+      setPatterns(CORPUS_PATTERNS.map((row) => ({ ...row, ...(byPattern.get(row.normalized_pattern) ?? {}) }))
+        .concat(stored.filter((row) => !CORPUS_PATTERNS.some((seed) => seed.normalized_pattern === row.normalized_pattern))));
     }
     setLoading(false);
   }, []);
@@ -105,9 +120,35 @@ export function ConversationLibrary() {
 
   const mapFamily = async (pattern: PatternRow, nextFamily: CanonicalConversationFamily) => {
     setSavingId(pattern.id);
+    let patternId = pattern.id;
+    if (pattern.id.startsWith("ocr-")) {
+      const { data: stored, error: seedError } = await supabase
+        .from("conversation_pattern_clusters")
+        .upsert({
+          normalized_pattern: pattern.normalized_pattern,
+          representative_text: pattern.representative_text,
+          occurrence_count: pattern.occurrence_count,
+          suggested_family: pattern.suggested_family,
+          avg_ocr_confidence: pattern.avg_ocr_confidence,
+          confidence_band: pattern.confidence_band,
+          sample_labels: pattern.sample_labels,
+          source_screenshots: pattern.source_screenshots,
+          source_zones: pattern.source_zones,
+          corpus_row_count: pattern.occurrence_count,
+          source_corpus: "gharpayy_ocr_redo_107_2026-09-11",
+        }, { onConflict: "normalized_pattern" })
+        .select("id")
+        .single();
+      if (seedError || !stored) {
+        setSavingId(null);
+        toast.error(seedError?.message ?? "Could not save this corpus variant");
+        return;
+      }
+      patternId = stored.id;
+    }
     const matchingRule = rules.find((rule) => rule.event_family === nextFamily) ?? null;
     const { data, error: saveError } = await supabase.rpc("assign_conversation_pattern_family", {
-      _pattern_id: pattern.id,
+      _pattern_id: patternId,
       _family: nextFamily,
       _notes: "Assigned in Conversation Library",
       _rule_id: matchingRule?.id ?? undefined,
@@ -118,7 +159,7 @@ export function ConversationLibrary() {
       return;
     }
     const saved = data as PatternRow;
-    setPatterns((current) => current.map((item) => item.id === pattern.id ? { ...item, ...saved } : item));
+    setPatterns((current) => current.map((item) => item.id === pattern.id ? { ...item, ...saved, id: patternId } : item));
     toast.success(`Mapped to ${CONVERSATION_FAMILY_LABELS[nextFamily]}`);
   };
 
@@ -157,14 +198,14 @@ export function ConversationLibrary() {
 
       <section className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="space-y-2">
-          <button type="button" onClick={() => setFamily("ALL")} className={`w-full rounded-md border p-3 text-left ${family === "ALL" ? "border-primary bg-primary/5" : "bg-card hover:bg-muted/50"}`}>
+          <Button type="button" variant="outline" onClick={() => setFamily("ALL")} className={`h-auto w-full justify-start p-3 text-left ${family === "ALL" ? "border-primary bg-primary/5" : "bg-card hover:bg-muted/50"}`}>
             <div className="flex items-center justify-between"><span className="text-sm font-semibold">All variants</span><Badge variant="secondary">{patterns.length}</Badge></div>
-          </button>
+          </Button>
           {familyStats.map((item) => (
-            <button key={item.key} type="button" onClick={() => setFamily(item.key)} className={`w-full rounded-md border p-3 text-left ${family === item.key ? "border-primary bg-primary/5" : "bg-card hover:bg-muted/50"}`}>
+            <Button key={item.key} type="button" variant="outline" onClick={() => setFamily(item.key)} className={`h-auto w-full justify-start p-3 text-left ${family === item.key ? "border-primary bg-primary/5" : "bg-card hover:bg-muted/50"}`}>
               <div className="flex items-center justify-between gap-2"><span className="text-sm font-semibold">{CONVERSATION_FAMILY_LABELS[item.key]}</span><Badge variant="outline">{item.variants.length}</Badge></div>
               <div className="mt-1 text-[11px] text-muted-foreground">{item.rules.length} canonical events · {item.variants.reduce((n, row) => n + row.occurrence_count, 0)} observations</div>
-            </button>
+            </Button>
           ))}
         </aside>
 
