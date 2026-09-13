@@ -1,5 +1,11 @@
 # Roadmap
 
+- [ ] Apply reviewed Conversation Library mappings to linked compiled states and lead execution fields
+
+- [ ] Build a persistent Flow OS lead detail page with chat evidence, state, momentum, and Do Now
+
+- [ ] Verify mapping propagation, claim safety, action logging, and responsive lead detail behavior
+
 - [ ] Complete Conversation State Compiler persistence and Flow OS read-model wiring
 - [ ] Backfill existing screenshot observations safely and report results
 - [ ] Resolve compiler-related database security findings
