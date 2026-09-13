@@ -3313,9 +3313,17 @@ export type Database = {
         Returns: boolean
       }
       is_tower_ops: { Args: { _user_id: string }; Returns: boolean }
+      reconcile_conversation_pattern_mapping: {
+        Args: { _pattern_id: string }
+        Returns: Json
+      }
       release_flow_claim: {
         Args: { _claim_id: string; _reason?: string }
         Returns: undefined
+      }
+      start_compiled_lead_action: {
+        Args: { _lead_id: string; _ttl_minutes?: number }
+        Returns: Json
       }
       touch_flow_claim: {
         Args: { _claim_id: string; _ttl_minutes?: number }
